@@ -1,0 +1,167 @@
+# EC2 Basics
+
+- EC2 is one of the most popular AWS offerings
+- Elastic Compute Cloud (infrastructure as a service)
+- Capability of:
+  - Renting virtual machines (EC2)
+  - Storing data on virtual drives (EBS)
+  - Distributing load across machines (ELB)
+  - Scaling the services using an auto-scaling group (ASG)
+- Sizing and configuration options:
+  - Operating System (OS): Linux, Windows or Mac OS
+  - How much compute power & cores (CPU)
+  - How much random-access memory (RAM)
+  - How much storage spaces: Network attached (EBS and EFS) and hardware (EC2 instance store)
+  - Network card: speed of the card, public IP address
+  - Firewall rules: security group
+  - Bootstrap script (configure at first launch): EC2 User Data
+- EC2 User Data:
+  - It is possible to bootstrap our instances using an EC2 User data script
+  - Bootstrapping means launching commands when a machine starts
+  - That script is only run once at the instance first start
+  - EC2 user data is used to automate boot tasks such as:
+    - Installing updates
+    - Installing software
+    - Downloading common files from the Internet
+    - Anything you can think of
+  - The EC2 User Data Script runs with the root user
+
+## EC2 Instance Types Basics
+
+- You can use different types of EC2 instances that are optimised for different use cases
+- AWS has the following naming convention: m5.2xlarge
+  - m: instance class
+  - 5: generation (AWS improves them over time)
+  - 2xlarge: size within the instance class
+- General purpose:
+  - Great for a diverse workload such as web servers or code repositories
+  - Balance between compute, memory and networking
+- Compute optimised:
+  - Great for compute-intensive tasks that require high performance processors
+  - Batch processing workloads
+  - Media transcoding
+  - High performance web servers
+  - High performance computing (HPC)
+  - Scientific modelling & machine leaning
+  - Dedicated gaming servers
+- Memory optimised:
+  - Fast performance for workloads that process large data sets in memory
+  - Use cases:
+    - High performance, relational/non-relational databases
+    - Distributed web scale cache stores
+    - In-memory databases optimised for BI (business intelligence)
+    - Applications performing real-time processing of big unstructured data
+- Storage optimised:
+  - Great for storage-intensive tasks that require high, sequential read and write access to large data sets on local storage
+  - Use cases:
+    - High frequency online transaction processing (OLTP) systems
+    - Relational & NoSQL databases
+    - Cache for in-memory databases (for example, Redis)
+    - Data warehousing applications
+    - Distributed file systems
+
+## Security Groups and Classic Ports
+
+- Security Groups are fundamental of network security in AWS
+- They control how traffic is allowed into or out of our EC2 instances
+- Security groups only contain allow rules
+- Security groups rules can reference by IP or by security group
+- Security groups are acting as a "firewall" on EC2 instances
+- They regulate:
+  - Access to ports
+  - Authorised IP ranges - IPv4 and IPv6
+  - Control of inbound network (from other to the instance)
+  - Control of outbound network (from the instance to other)
+- Security groups:
+  - Can be attached to multiple instances
+  - Locked down to a region/VPC combination
+  - Does live "outside" the EC2 - if traffic is blocked the EC2 instance won't see it
+  - It's good to maintain one separate security group for SSH access
+  - If your application is not accessible (time out), then it's a security group issue
+  - All inbound traffic is blocked by default
+  - All outbound traffic is authorised by default
+- Classic ports:
+  - 22: SSH (secure Shell) - log into a Linux instance
+  - 21: FTP (file transfer protocol) - upload files into a file share
+  - 22: SFTP (secure file transfer protocol) - upload files using SSH
+  - 80: HTTP - access insecure websites
+  - 443: HTTPS - access secure websites
+  - 3389: RDP (Remote Desktop Protocol) - log into a Windows instance
+
+## EC2 Instance Connect
+
+- Allows you to do a browser based SSH session
+
+## EC2 Purchasing Options
+
+- On-demand instances: short workload, predictable pricing, pay by second
+- Reserved (1 & 3 years)
+  - Reserved instances - long workloads
+  - Convertible reserved instances - long workloads with flexible instances
+- Savings plans (1 & 3 years): commitment to an amount of usage, long workload
+- Spot instances: short workloads, cheap, can lose instances (less reliable)
+- Dedicated hosts: book an entire physical server, control instance placement
+- Dedicated instances: no other customers will share your hardware
+- EC2 On Demand:
+  - Pay for what your use: Linux/windows is billed per second, after the first minute and all other operating systems billed per
+    hour
+  - Has the highest cost but no upfront payment
+  - No long-term commitment
+  - Recommended for short-term and un-interrupted workloads, where you can't predict how the application will behave
+- EC2 Reserved instances:
+  - Up to 72% discount compared to On-Demand
+  - You reserve a specific instance attribute (Instance Type, Region, Tenancy, OS)
+  - Reservation period: 1 year (+ discount) or 3 years (+++ discount)
+  - Payment options: no upfront (+), partial upfront (++), all upfront (+++)
+  - Reserved instance's scope: regional or zonal (reserve capacity in an AZ)
+  - Recommended for steady-state usage applications (think database)
+  - You can buy and sell in the reserved instance market place
+  - Convertible Reserved Instance
+    - Can change the EC2 instance type, instance family, OS, scope and tenancy
+    - Up to 66% discount
+- EC2 Savings Plan
+  - Get a discount based on long term usage (up to 72% - same as RIs)
+  - Commit to a certain type of usage
+  - Usage beyond EC2 Savings Plans is billed at the On-Demand price
+  - Locked to a specific instance family & AWS Region (eg. M5 in us-east-1)
+  - Flexible across:
+    - Instance Size (eg.. m5.xlarge, m5.2xlarge)
+    - OS (Linux, Windows etc.)
+    - Tenancy (Host, Dedicated, Default)
+- EC2 Spot Instances
+  - Can get discount of up to 90% compared to On-Demand
+  - Instances that you can "lose" at any point of time if your max price is less than the current spot price
+  - The MOST cost efficient instance in AWS
+  - Useful for workloads that are resilient for failure:
+    - Batch jobs
+    - Data analysis
+    - Image processing
+    - Any distributed workloads
+    - Workloads with a flexible start and end time
+  - Note suitable for critical jobs or databases
+- EC2 Dedicated Hosts
+  - A physical server with EC2 instance capacity fully dedicated to your use
+  - Allows you to address compliance requirements and use your existing server-bound software licenses (per-socket, per-core, pe-vm software licenses)
+  - Purchasing options:
+    - On-demand: pay per second for active Dedicated Host
+    - Reserved: 1 or 3 years (no upfront, partial upfront, all upfront)
+  - The most expensive option
+  - Useful for software that have complicated licensing model (BYOL - Bring Your Own License)
+  - Or for companies that have strong regulatory or compliance needs
+- EC2 Dedicated Instances
+  - Instances run on hardware that's dedicated to you
+  - May share hardware with other instances in same account
+  - No control over instance placement (can move hardware after stop/start)
+- EC2 Capacity Reservations
+  - Reserve On-Demand instances capacity in a specific AZ for any duration
+  - You always have access to EC2 capacity when you need it
+  - No time commitment (create/cancel anytime), no billing discounts
+  - Combine with Regional Reserved Instances and Savings Plans to benefit from billing discounts
+  - You're charged at On-Demand rate whether you run instances or not
+  - Suitable for short-term, uninterrupted workloads that needs to be in a specific AZ
+- On demand: coming and staying in a resort whenever we like, we pay the full price
+- Reserved: like planning ahead and if we plan to stay for a long time, we may get a good discount
+- Savings plan: pay a certain amount per hour for certain period and stay in any room type
+- Spot instances: the hotel allows people to bid for the empty rooms and the highest bidder keeps the rooms, and you can get kicked out at any time
+- Dedicated Hosts: we book an entire building of the resort
+- Capacity reservations: you book a room for a period with full price even when you don't stay in it
